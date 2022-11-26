@@ -28,7 +28,7 @@ RUN apt-get update && \
   xz-utils \
   zlib1g-dev && \
   rm -rf /var/lib/apt/lists/*
-
+RUN apt-get update && apt-get install --yes --no-install-recommends sqlite3
 # Disable sandboxing
 # Without this opam fails to compile OCaml for some reason. We don't need sandboxing inside a Docker container anyway.
 RUN opam init --reinit --bare --disable-sandboxing --yes --auto-setup
@@ -51,10 +51,69 @@ RUN cd /infer && \
   DESTDIR="/infer-release" \
   libdir_relative_to_bindir="../lib"
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
+FROM debian:bullseye-slim
+RUN apt-get update
+RUN apt-get update && \
+  mkdir -p /usr/share/man/man1 && \
+  apt-get install --yes --no-install-recommends \
+  autoconf \
+  automake \
+  bzip2 \
+  cmake \
+  curl \
+  g++ \
+  gcc \
+  git \
+  libc6-dev \
+  libgmp-dev \
+  libmpfr-dev \
+  libsqlite3-dev \
+  make \
+  opam \
+  patch \
+  patchelf \
+  pkg-config \
+  python3 \
+  python3-distutils \
+  unzip \
+  xz-utils \
+  zlib1g-dev && \
+  rm -rf /var/lib/apt/lists/*
 # Get the infer release
 COPY --from=compilator /infer-release/usr/local /infer
+# install java
+ENV PATH=$PATH:/opt/java/jdk-17/bin
+RUN apt-get update && apt-get install --yes --no-install-recommends openjdk-17-jdk-headless
+RUN apt-get update && apt-get install --yes --no-install-recommends maven
+# Install gradle
+# Downloading and installing Gradle
+# 1- Define a constant with the version of gradle you want to install
+ARG GRADLE_VERSION=7.6
 
+# 2- Define the URL where gradle can be downloaded from
+ARG GRADLE_BASE_URL=https://services.gradle.org/distributions
+
+# 3- Define the SHA key to validate the gradle download
+#    obtained from here https://gradle.org/release-checksums/
+
+# 4- Create the directories, download gradle, validate the download, install it, remove downloaded file and set links
+RUN mkdir -p /usr/share/gradle /usr/share/gradle/ref \
+  && echo "Downlaoding gradle hash" \
+  && curl -fsSL -o /tmp/gradle.zip ${GRADLE_BASE_URL}/gradle-${GRADLE_VERSION}-bin.zip \
+  \
+  && echo "Unziping gradle" \
+  && unzip -d /usr/share/gradle /tmp/gradle.zip \
+  \
+  && echo "Cleaning and setting links" \
+  && rm -f /tmp/gradle.zip \
+  && ln -s /usr/share/gradle/gradle-${GRADLE_VERSION} /usr/bin/gradle
+
+# 5- Define environmental variables required by gradle
+ENV GRADLE_VERSION 7.6
+ENV GRADLE_HOME /usr/bin/gradle
+ENV GRADLE_USER_HOME /cache
+
+ENV PATH $PATH:$GRADLE_HOME/bin
 # Install infer
 ENV PATH /infer/bin:${PATH}
 WORKDIR /work/
