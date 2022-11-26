@@ -51,12 +51,12 @@ RUN cd /infer && \
   DESTDIR="/infer-release" \
   libdir_relative_to_bindir="../lib"
 
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
 # Get the infer release
 COPY --from=compilator /infer-release/usr/local /infer
 
 # Install infer
 ENV PATH /infer/bin:${PATH}
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
 WORKDIR /work/
 RUN chown 1001 /work \
   && chmod "g+rwX" /work \
