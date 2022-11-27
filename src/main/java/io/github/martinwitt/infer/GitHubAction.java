@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -13,22 +15,29 @@ import io.quarkiverse.githubaction.Action;
 import io.quarkiverse.githubaction.Commands;
 import io.quarkiverse.githubaction.Context;
 import io.quarkiverse.githubaction.Inputs;
+import io.quarkiverse.githubaction.Outputs;
 
 public class GitHubAction {
+    public static final String ACTION_NAME = "Infer-Scan";
 
-    @Action
-    void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub) {
+    @Action(ACTION_NAME)
+    void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub, Outputs outputs) throws IOException {
         System.out.println("Hello " + "From GitHub Action");
         String buildCommand = inputs.get("build-command").orElseThrow();
         System.out.println("Build command: " + buildCommand);
         System.out.println("I would run: " + "infer capture - " + buildCommand);
         System.out.println(context);
         try {
-            int exitCode = runInfer("infer capture -- " + buildCommand);
+            Files.list(Path.of(context.getGitHubWorkspace())).forEach(System.out::println);
+            int exitCode = runInfer("infer capture --sarif -- " + buildCommand);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error: " + e.getMessage());
         }
+        outputs.produce("resultfile", context.getGitHubWorkspace() + " infer-out/report.sarif");
+        outputs.produce("results_infer", Files.readString(Path.of(context.getGitHubWorkspace() + " infer-out/output.json")));
         System.out.println("Done running Infer ");
+
     }
 
     private int runInfer(String  command) throws IOException, InterruptedException {
