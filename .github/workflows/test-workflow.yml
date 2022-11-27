@@ -2,9 +2,9 @@ name: container test
 
 on:
   push:
-    branches: [ main ]
+    branches: ["*"] # Run on all branches"
   pull_request:
-    branches: [ main ]
+    branches: ["*"] # Run on all branches"
 
 jobs:
   build:
