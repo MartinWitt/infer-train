@@ -82,8 +82,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 # Get the infer release
 # COPY --from=compilator /infer-release/usr/local /infer
-RUN apt-get install --reinstall ca-certificates
-RUN git clone http://github.com/facebook/infer.git && cd infer && ./build-infer.sh java && make install
+RUN cd / && git clone --depth 1 https://github.com/facebook/infer/ && cd infer && ./build-infer.sh java && make install
 
 # install java
 ENV PATH=$PATH:/opt/java/jdk-17/bin
