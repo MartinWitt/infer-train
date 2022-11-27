@@ -41,25 +41,3 @@ compileJava {
 compileTestJava {
     options.encoding = 'UTF-8'
 }
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/MartinWitt/infer-train")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-            }
-        }
-    }
-    publications {
-        gpr(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-tasks.withType(GenerateModuleMetadata).configureEach {
-    // The value 'enforced-platform' is provided in the validation
-    // error message you got
-    suppressedValidationErrors.add('enforced-platform')
-}
