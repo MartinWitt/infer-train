@@ -11,4 +11,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - name : run test action
-          uses: MartinWitt/infer-train@bace8f0248f6c44a2415f81b5292bfadef3b853bdcee7ec0e3ebd4b9999c6634
+          uses: MartinWitt/infer-train@master
