@@ -106,5 +106,7 @@ jobs:
       runs-on: ubuntu-latest
       needs: build
       steps:
+        - name: pull image
+          run: docker pull ghcr.io/MartinWitt/infer-train@dev
         - name : run test action
-          uses: MartinWitt/infer-train@$GITHUB_SHA
+          uses: MartinWitt/infer-train@dev
