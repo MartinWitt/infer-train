@@ -102,3 +102,11 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+
+  test-container:
+    runs-on: ubuntu-latest
+    steps:
+        - name : run test action
+          uses: docker://ghcr.io/martinwitt/infer-train:dev
+          with:
+            build-command: "mvn build"

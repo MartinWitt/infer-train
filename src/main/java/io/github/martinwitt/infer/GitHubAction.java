@@ -9,8 +9,12 @@ import io.quarkiverse.githubaction.Inputs;
 public class GitHubAction {
 
     @Action
-    void doSomething(Inputs inputs, Commands commands, Context context, GitHub gitHub) {
+    void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub) {
         System.out.println("Hello " + "From GitHub Action");
+        String buildCommand = inputs.get("build-command").orElseThrow();
+        System.out.println("Build command: " + buildCommand);
+        System.out.println("I would run: " + "infer capture - " + buildCommand);
+        System.out.println(context);
     }
   }
 

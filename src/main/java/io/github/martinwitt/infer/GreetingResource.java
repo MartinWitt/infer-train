@@ -33,15 +33,15 @@ public class GreetingResource {
         return result;
     }
     
-    public String executeInfer(String repoLink) throws InvalidRemoteException, TransportException, GitAPIException {
+    public String executeInfer(String repoLink)
+            throws InvalidRemoteException, TransportException, GitAPIException {
         try (Git git = Git.cloneRepository().setNoCheckout(true).setURI(repoLink).call()) {
             File workDir = git.getRepository().getWorkTree();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // TODO: Delete folder if exists
             e.printStackTrace();
         }
-        
+
         return "Hello from RESTEasy Reactive";
     }
 }
