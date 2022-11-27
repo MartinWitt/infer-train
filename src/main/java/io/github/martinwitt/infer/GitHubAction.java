@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -29,7 +30,7 @@ public class GitHubAction {
         System.out.println(context);
         try {
             Files.list(Path.of(context.getGitHubWorkspace())).forEach(System.out::println);
-            int exitCode = runInfer("infer capture --sarif -- " + buildCommand);
+            int exitCode = runInfer(List.of("infer", "capture","--sarif", "--", buildCommand));
             commands.appendJobSummary(Files
                     .readString(Path.of(context.getGitHubWorkspace() + " infer-out/output.json")));
 
@@ -44,10 +45,9 @@ public class GitHubAction {
         commands.appendJobSummary("Done running Infer");
     }
 
-    private int runInfer(String command) throws IOException, InterruptedException {
+    private int runInfer(List<String> command) throws IOException, InterruptedException {
         ProcessBuilder builder = new ProcessBuilder();
         builder.command(command);
-        builder.directory(new File("."));
         Process process = builder.start();
         StreamGobbler streamGobbler =
                 new StreamGobbler(process.getInputStream(), System.out::println);
