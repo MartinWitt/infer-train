@@ -15,10 +15,6 @@ on:
   pull_request:
     branches: [ "master"]
 
-concurrency:
-  group: ${{ (github.event_name == 'pull_request' && github.event.pull_request.number) || github.head_ref }}
-  cancel-in-progress: true
-
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
@@ -38,6 +34,8 @@ jobs:
       id-token: write
 
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Setup Gradle
