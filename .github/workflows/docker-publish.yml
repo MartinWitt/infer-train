@@ -14,15 +14,16 @@ on:
     tags: [ 'v*.*.*' ]
   pull_request:
     branches: [ "master"]
+concurrency: 
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
 
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-concurrency: 
-  group: ${{ github.head_ref }}
-  cancel-in-progress: true
+
 
 jobs:
   build:
