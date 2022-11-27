@@ -82,9 +82,9 @@ RUN apt-get update && \
 # Get the infer release
 # COPY --from=compilator /infer-release/usr/local /infer
 RUN VERSION=1.10; \
-    curl -sSL "https://github.com/facebook/infer/releases/download/v$VERSION/infer-linux64-v$VERSION.tar.xz" \
-    | sudo tar -C /opt -xJ && \
-    sudo ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /usr/local/bin/infer
+    curl -sSL "http://github.com/facebook/infer/releases/download/v$VERSION/infer-linux64-v$VERSION.tar.xz" \
+    | tar -C /opt -xJ && \
+    ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /usr/local/bin/infer
 # install java
 ENV PATH=$PATH:/opt/java/jdk-17/bin
 RUN apt-get update && apt-get install --yes --no-install-recommends openjdk-17-jdk-headless
