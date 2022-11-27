@@ -1,0 +1,15 @@
+name: container test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        - name : run test action
+          uses: docker://ghcr.io/MartinWitt/infer-train@dev
+          
