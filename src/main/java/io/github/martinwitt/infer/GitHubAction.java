@@ -44,10 +44,10 @@ public class GitHubAction {
         commands.appendJobSummary("Done running Infer");
     }
 
-    private int runInfer(String  command) throws IOException, InterruptedException {
+    private int runInfer(String command) throws IOException, InterruptedException {
         ProcessBuilder builder = new ProcessBuilder();
         builder.command(command);
-        builder.directory(new File(System.getProperty(".")));
+        builder.directory(new File("."));
         Process process = builder.start();
         StreamGobbler streamGobbler =
                 new StreamGobbler(process.getInputStream(), System.out::println);

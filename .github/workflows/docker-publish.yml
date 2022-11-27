@@ -112,4 +112,4 @@ jobs:
         - name : run test action
           uses: docker://ghcr.io/martinwitt/infer-train:dev
           with:
-            build-command: "mvn build"
+            build-command: "gradle compileJava"
