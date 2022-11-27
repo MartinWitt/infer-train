@@ -52,7 +52,6 @@ RUN cd / && \
 #     libdir_relative_to_bindir="../lib"
 
 FROM debian:bullseye-slim
-RUN apt-get update
 RUN apt-get update && \
     mkdir -p /usr/share/man/man1 && \
     apt-get install --yes --no-install-recommends \
@@ -82,6 +81,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 # Get the infer release
 # COPY --from=compilator /infer-release/usr/local /infer
+RUN git config --global http.sslVerify true
 RUN cd / && git clone --depth 1 http://github.com/facebook/infer/ && cd infer && ./build-infer.sh java && make install
 
 # install java
