@@ -1,0 +1,17 @@
+
+# action.yml
+name: 'Hello World'
+description: 'Greet someone'
+inputs:
+  who-to-greet:
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+  github-token:
+    description: 'GitHub token'
+    required: false
+runs:
+  using: 'docker'
+  image: 'docker://ghcr.io/martinwitt/infer-train:dev'
+  #pre-entrypoint: '/work/application'
+  #post-entrypoint: '/work/application'
