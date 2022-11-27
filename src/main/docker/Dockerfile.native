@@ -121,6 +121,8 @@ ENV GRADLE_USER_HOME /cache
 ENV PATH $PATH:$GRADLE_HOME/bin
 # Install infer
 ENV PATH /infer/bin:${PATH}
+RUN echo $PATH
+RUN ls /infer/bin
 RUN chown 1001 / \
     && chmod "g+rwX" / \
     && chown 1001:root /
