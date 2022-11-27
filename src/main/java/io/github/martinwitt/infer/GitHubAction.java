@@ -20,7 +20,7 @@ import io.quarkiverse.githubaction.Outputs;
 public class GitHubAction {
     public static final String ACTION_NAME = "Infer-Scan";
 
-    @Action(ACTION_NAME)
+    @Action()
     void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub, Outputs outputs) throws IOException {
         System.out.println("Hello " + "From GitHub Action");
         String buildCommand = inputs.get("build-command").orElseThrow();
