@@ -82,7 +82,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 # Get the infer release
 # COPY --from=compilator /infer-release/usr/local /infer
-RUN VERSION=1.10; \
+RUN VERSION=1.1.0; \
     curl --insecure -sSL "http://github.com/facebook/infer/releases/download/v1.1.0/infer-linux64-v1.1.0.tar.xz" \
     | tar -C /opt -xJ && \
     ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /infer
