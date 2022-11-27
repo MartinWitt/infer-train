@@ -30,7 +30,7 @@ public class GitHubAction {
         System.out.println(context);
         try {
             Files.list(Path.of(context.getGitHubWorkspace())).forEach(System.out::println);
-            int exitCode = runInfer(List.of("bin/bash","infer", "capture","--sarif", "--", buildCommand));
+            int exitCode = runInfer(List.of("bin/bash","-c","infer", "capture","--sarif", "--", buildCommand));
             commands.appendJobSummary(Files
                     .readString(Path.of(context.getGitHubWorkspace() + " infer-out/output.json")));
 
