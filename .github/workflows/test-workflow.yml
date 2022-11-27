@@ -1,0 +1,14 @@
+name: Unit-Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        - name : run test action
+          uses: martinwitt/infer-train
