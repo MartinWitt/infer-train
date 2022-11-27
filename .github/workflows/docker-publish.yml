@@ -107,4 +107,4 @@ jobs:
       needs: build
       steps:
         - name : run test action
-          uses: MartinWitt/infer-train@ ${{GITHUB_SHA}}
+          uses: MartinWitt/infer-train@$GITHUB_SHA
