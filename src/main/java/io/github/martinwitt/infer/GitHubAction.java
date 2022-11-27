@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import org.buildobjects.process.ProcBuilder;
 import org.kohsuke.github.GitHub;
 import io.quarkiverse.githubaction.Action;
 import io.quarkiverse.githubaction.Commands;
@@ -30,7 +31,7 @@ public class GitHubAction {
         System.out.println(context);
         try {
             Files.list(Path.of(context.getGitHubWorkspace())).forEach(System.out::println);
-            int exitCode = runInfer(List.of("bin/bash","-c","infer", "capture","--sarif", "--", buildCommand));
+            int exitCode = runInfer(List.of("capture","--sarif", "--", buildCommand));
             commands.appendJobSummary(Files
                     .readString(Path.of(context.getGitHubWorkspace() + " infer-out/output.json")));
 
@@ -45,29 +46,10 @@ public class GitHubAction {
         commands.appendJobSummary("Done running Infer");
     }
 
-    private int runInfer(List<String> command) throws IOException, InterruptedException {
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command(command);
-        Process process = builder.start();
-        StreamGobbler streamGobbler =
-                new StreamGobbler(process.getInputStream(), System.out::println);
-        Future<?> future = Executors.newSingleThreadExecutor().submit(streamGobbler);
-       return process.waitFor();
-    }
-    
-    private static class StreamGobbler implements Runnable {
-        private InputStream inputStream;
-        private Consumer<String> consumer;
+    private int runInfer(List<String> args) throws IOException, InterruptedException {
+        System.out.println(ProcBuilder.run("infer", args.toArray(new String[0])));
 
-        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
-            this.inputStream = inputStream;
-            this.consumer = consumer;
-        }
-
-        @Override
-        public void run() {
-            new BufferedReader(new InputStreamReader(inputStream)).lines().forEach(consumer);
-        }
+       return 0;
     }
   }
 
