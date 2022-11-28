@@ -50,6 +50,7 @@ public class GitHubAction {
             commands.endGroup();
             List<Result> results = getResults(context);
             for (Result result : results) {
+                commands.appendJobSummary(result.toString());
                 String ruleId = result.getRuleId();
                 String region = result.getLocations()
                         .get(0)
