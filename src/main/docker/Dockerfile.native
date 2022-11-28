@@ -41,7 +41,7 @@ RUN cd / && \
 # don't lose the significant amount of work done in the previous
 # steps.
 # RUN cd /infer && ./build-infer.sh java --only-setup-opam
-# RUN cd /infer && ./build-infer.sh java
+RUN cd /infer && ./build-infer.sh java
 
 # Generate a release
 # RUN cd /infer && \
@@ -80,9 +80,10 @@ RUN apt-get update && \
     zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
 # Get the infer release
-# COPY --from=compilator /infer-release/usr/local /infer
-RUN git config --global http.sslVerify true
-RUN cd / && git clone --depth 1 http://github.com/facebook/infer/ && cd infer && ./build-infer.sh java && make install
+COPY --from=compilator /infer /infer
+# Install infer
+RUN cd infer && make install
+# RUN cd / && git clone --depth 1 http://github.com/facebook/infer/ && cd infer && ./build-infer.sh java && make install
 
 # install java
 ENV PATH=$PATH:/opt/java/jdk-17/bin
