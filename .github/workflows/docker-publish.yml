@@ -112,7 +112,7 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v3
         - name : run test action
-          uses: docker://ghcr.io/martinwitt/infer-train:dev
+          uses: docker://ghcr.io/martinwitt/infer-train:master
           with:
             build-command: "gradle compileJava"
             use-annotations: "true"

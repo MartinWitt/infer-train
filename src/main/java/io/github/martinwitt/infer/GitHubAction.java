@@ -32,7 +32,7 @@ public class GitHubAction {
         buildCommandArgs.addAll(List.of("run","--sarif", "--"));
         buildCommandArgs.addAll(Arrays.asList(buildCommand.split(" ", -1)));
         try {
-            commands.appendJobSummary("## Infer scan start\n");
+            commands.jobSummary("# Infer scan start\n");
             commands.appendJobSummary(runInfer(buildCommandArgs));
             // commands.appendJobSummary(Files.list(Path.of(context.getGitHubWorkspace() + "/infer-out/")).map(v -> v.toString()).collect(Collectors.joining("\n")));
             commands.appendJobSummary("## Infer scan completed");

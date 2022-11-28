@@ -73,6 +73,9 @@ import com.contrastsecurity.sarif.WebRequest;
 import com.contrastsecurity.sarif.WebResponse;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
+/**
+ * Here we register all the classes that are used in the SARIF schema.
+ */
 @RegisterForReflection(
         targets = {Address.class,
                 Artifact.class,
