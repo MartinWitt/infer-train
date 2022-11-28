@@ -10,6 +10,7 @@ import io.quarkiverse.githubaction.Inputs;
 import io.quarkiverse.githubaction.Outputs;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -38,11 +39,16 @@ public class GitHubAction {
         buildCommandArgs.addAll(Arrays.asList(buildCommand.split(" ", -1)));
         try {
             commands.jobSummary("# Infer scan start\n");
+            commands.group("## infer build log");
             commands.appendJobSummary(runInfer(buildCommandArgs));
+            commands.endGroup();
             commands.appendJobSummary("## Infer scan completed");
+            commands.group("## Infer scan results");
+            commands.appendJobSummary(Files.readString(Path.of(context.getGitHubWorkspace(), "/infer-out/report.txt")));
+            commands.endGroup();
             if (inputs.getBoolean("use-annotations").orElse(false)) {
-                StringReader reader = new StringReader(
-                        Files.readString(Path.of(context.getGitHubWorkspace() + INFER_OUT_REPORT_SARIF)));
+                StringReader reader = new StringReader(Files.readString(
+                        Path.of(context.getGitHubWorkspace() + INFER_OUT_REPORT_SARIF), StandardCharsets.UTF_8));
 
                 ObjectMapper mapper = new ObjectMapper();
                 SarifSchema210 sarif = mapper.readValue(reader, SarifSchema210.class);
