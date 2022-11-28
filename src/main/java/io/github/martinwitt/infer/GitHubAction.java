@@ -29,7 +29,7 @@ public class GitHubAction {
     @Inject
     PrMode prMode;
 
-    @Action(ACTION_NAME)
+    @Action
     void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub, Outputs outputs)
             throws IOException {
         String buildCommand = inputs.get("build-command").orElseThrow();
