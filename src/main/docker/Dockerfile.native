@@ -110,12 +110,12 @@ RUN mkdir -p /usr/share/gradle /usr/share/gradle/ref \
     \
     && echo "Cleaning and setting links" \
     && rm -f /tmp/gradle.zip \
-    && ln -s /usr/share/gradle/gradle-${GRADLE_VERSION} /usr/bin/gradle
+    && ln -s /usr/share/gradle/gradle-${GRADLE_VERSION} /gradle
 
 # 5- Define environmental variables required by gradle
 ENV GRADLE_VERSION 7.6
-ENV GRADLE_HOME /usr/bin/gradle
-ENV GRADLE_USER_HOME /cache
+ENV GRADLE_HOME /gradle
+# ENV GRADLE_USER_HOME /cache
 
 ENV PATH $PATH:$GRADLE_HOME/bin
 
