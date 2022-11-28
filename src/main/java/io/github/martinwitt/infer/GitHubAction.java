@@ -40,7 +40,7 @@ public class GitHubAction {
         try {
             commands.jobSummary("# Infer scan start\n");
             commands.group("## infer build log");
-            commands.appendJobSummary(runInfer(buildCommandArgs));
+            commands.notice(runInfer(buildCommandArgs));
             commands.endGroup();
             commands.appendJobSummary("## Infer scan completed");
             commands.group("## Infer scan results");
@@ -49,7 +49,6 @@ public class GitHubAction {
             if (inputs.getBoolean("use-annotations").orElse(false)) {
                 StringReader reader = new StringReader(Files.readString(
                         Path.of(context.getGitHubWorkspace() + INFER_OUT_REPORT_SARIF), StandardCharsets.UTF_8));
-
                 ObjectMapper mapper = new ObjectMapper();
                 SarifSchema210 sarif = mapper.readValue(reader, SarifSchema210.class);
                 List<Result> results = sarif.getRuns().get(0).getResults();
