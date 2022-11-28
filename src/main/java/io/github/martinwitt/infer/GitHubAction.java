@@ -31,10 +31,10 @@ public class GitHubAction {
     void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub, Outputs outputs) throws IOException {
         String buildCommand = inputs.get("build-command").orElseThrow();
         List<String> buildCommandArgs = new ArrayList<>();
-        buildCommandArgs.addAll(List.of("capture","--sarif", "--"));
+        buildCommandArgs.addAll(List.of("run","--sarif", "--"));
         buildCommandArgs.addAll(Arrays.asList(buildCommand.split(" ", -1)));
         try {
-            runInfer(buildCommandArgs);
+           commands.appendJobSummary(runInfer(buildCommandArgs));
             Path.of(context.getGitHubWorkspace()).forEach(System.out::println);
             commands.appendJobSummary(Files
                     .readString(Path.of(context.getGitHubWorkspace() + "/infer-out/output.json")));
@@ -49,11 +49,11 @@ public class GitHubAction {
         commands.appendJobSummary("Done running Infer");
     }
 
-    private int runInfer(List<String> args)  {
+    private String runInfer(List<String> args)  {
         var string = new ProcBuilder("infer").withArgs(args.toArray(new String[0])).withNoTimeout()
                 .run().getOutputString();
        System.out.println(string);
-        return 0;
+        return string;
     }
   }
 
