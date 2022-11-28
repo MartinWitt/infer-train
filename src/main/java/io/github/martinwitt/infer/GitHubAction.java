@@ -35,21 +35,17 @@ public class GitHubAction {
         buildCommandArgs.addAll(List.of("run","--sarif", "--"));
         buildCommandArgs.addAll(Arrays.asList(buildCommand.split(" ", -1)));
         try {
+            commands.appendJobSummary("## Infer scan start");
             commands.appendJobSummary(runInfer(buildCommandArgs));
             commands.appendJobSummary(Files.list(Path.of(context.getGitHubWorkspace() + "/infer-out/")).map(v -> v.toString()).collect(Collectors.joining("\n")));
             commands.appendJobSummary("## Infer scan completed");
             Path.of(context.getGitHubWorkspace()).forEach(System.out::println);
             commands.appendJobSummary(Files
-                    .readString(Path.of(context.getGitHubWorkspace() + "/infer-out/output.json")));
-
+                    .readString(Path.of(context.getGitHubWorkspace() + "/infer-out/report.sarif")));
         } catch (Exception e) {
-            commands.appendJobSummary(e.toString());
+            commands.jobSummary("## Infer scan failed\n" + e.toString());
             e.printStackTrace();
         }
-        outputs.produce("resultfile", context.getGitHubWorkspace() + "/infer-out/report.sarif");
-        outputs.produce("results_infer", Files.readString(Path.of(context.getGitHubWorkspace() + "/infer-out/output.json")));
-        System.out.println("Done running Infer ");
-        commands.appendJobSummary("Done running Infer");
     }
 
     private String runInfer(List<String> args)  {
