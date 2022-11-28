@@ -109,6 +109,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
         - name : run test action
           uses: docker://ghcr.io/martinwitt/infer-train:dev
           with:
