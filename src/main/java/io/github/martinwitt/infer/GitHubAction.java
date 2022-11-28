@@ -50,25 +50,17 @@ public class GitHubAction {
             commands.endGroup();
             List<Result> results = getResults(context);
             for (Result result : results) {
-                commands.appendJobSummary(result.toString());
                 String ruleId = result.getRuleId();
-                String region = result.getLocations()
-                        .get(0)
-                        .getPhysicalLocation()
-                        .getContextRegion()
-                        .getSnippet()
-                        .getText();
                 String message = result.getMessage().getText();
                 String markdown =
                         """
                             # %s
-                            %s
                             ```java
                             %s
                             ```
 
                                 """
-                                .formatted(ruleId, message, region);
+                                .formatted(ruleId, message);
                 commands.warning(markdown);
             }
             if (inputs.getBoolean("use-annotations").orElse(false)) {
