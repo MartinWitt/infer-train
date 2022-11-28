@@ -41,6 +41,7 @@ public class GitHubAction {
             if (inputs.getBoolean("use-annotations").orElse(false)) {
                 StringReader reader = new StringReader(Files.readString(
                         Path.of(context.getGitHubWorkspace() + "/infer-out/report.sarif")));
+                        
                 ObjectMapper mapper = new ObjectMapper();
                 SarifSchema210 sarif = mapper.readValue(reader, SarifSchema210.class);
                 for (var result : sarif.getRuns().get(0).getResults()) {
@@ -59,7 +60,7 @@ public class GitHubAction {
   
                     }
         } catch (Exception e) {
-            commands.jobSummary("## Infer scan failed\n" + e.toString());
+            commands.appendJobSummary("## Infer scan failed\n" + e.toString());
             e.printStackTrace();
         }
     }
