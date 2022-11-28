@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.inject.Inject;
 import org.buildobjects.process.ProcBuilder;
 import org.kohsuke.github.GitHub;
 
@@ -24,6 +25,9 @@ public class GitHubAction {
     private static final String ACTION_NAME = "Infer-Scan";
     private static final String ACTION_DESCRIPTION = "Run Infer static analysis on a GitHub repository";
     private static final String INFER_COMMAND = "infer";
+
+    @Inject
+    PrMode prMode;
 
     @Action(ACTION_NAME)
     void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub, Outputs outputs)
@@ -42,7 +46,15 @@ public class GitHubAction {
 
                 ObjectMapper mapper = new ObjectMapper();
                 SarifSchema210 sarif = mapper.readValue(reader, SarifSchema210.class);
-                for (var result : sarif.getRuns().get(0).getResults()) {
+                List<Result> results = sarif.getRuns().get(0).getResults();
+                if (inputs.getBoolean("pr-mode").orElse(false)) {
+                    results = prMode.filterResults(
+                            results,
+                            Path.of(context.getGitHubWorkspace()),
+                            context.getGitHubBaseRef(),
+                            context.getGitHubRef());
+                }
+                for (var result : results) {
                     result.getLocations().get(0).getPhysicalLocation().getArtifactLocation();
                     String fileName = getFilePathFromResult(result);
                     String message = result.getMessage().getText();

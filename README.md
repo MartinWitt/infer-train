@@ -9,9 +9,11 @@ run-infer:
     runs-on: ubuntu-latest
     needs: build
     steps:
-        - name: Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v3
-        - name : run infer action
+        with:
+            fetch-depth: 0
+      - name : run infer action
         uses: docker://ghcr.io/martinwitt/infer-train:master
         with:
             build-command: "gradle compileJava"
@@ -22,7 +24,7 @@ Options:
 
 - `build-command` (required): The command to build the project.
 - `use-annotations` (optional): Whether to use the GitHub PR annotations. Default: `false`
-
+- `pr-mode` (optional): Whether to run infer in PR mode. Default: `false`
 
 ## Motivation
 
