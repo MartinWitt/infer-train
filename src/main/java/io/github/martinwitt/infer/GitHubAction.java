@@ -32,16 +32,14 @@ public class GitHubAction {
         buildCommandArgs.addAll(List.of("run","--sarif", "--"));
         buildCommandArgs.addAll(Arrays.asList(buildCommand.split(" ", -1)));
         try {
-            commands.appendJobSummary("## Infer scan start");
+            commands.appendJobSummary("## Infer scan start\n");
             commands.appendJobSummary(runInfer(buildCommandArgs));
-            commands.appendJobSummary(Files.list(Path.of(context.getGitHubWorkspace() + "/infer-out/")).map(v -> v.toString()).collect(Collectors.joining("\n")));
+            // commands.appendJobSummary(Files.list(Path.of(context.getGitHubWorkspace() + "/infer-out/")).map(v -> v.toString()).collect(Collectors.joining("\n")));
             commands.appendJobSummary("## Infer scan completed");
-            commands.appendJobSummary(Files
-                    .readString(Path.of(context.getGitHubWorkspace() + "/infer-out/report.sarif")));
             if (inputs.getBoolean("use-annotations").orElse(false)) {
                 StringReader reader = new StringReader(Files.readString(
                         Path.of(context.getGitHubWorkspace() + "/infer-out/report.sarif")));
-                        
+
                 ObjectMapper mapper = new ObjectMapper();
                 SarifSchema210 sarif = mapper.readValue(reader, SarifSchema210.class);
                 for (var result : sarif.getRuns().get(0).getResults()) {
@@ -55,7 +53,10 @@ public class GitHubAction {
                     commands.warning(message, 
                             result.getRuleId(), 
                             fileName, 
-                            startLine, null, startColumn, null);
+                            startLine, 
+                            null, 
+                            startColumn, 
+                            null);
                 } 
   
                     }
@@ -73,7 +74,8 @@ public class GitHubAction {
     }
     
     private static String getFilePathFromResult(Result result) {
-        return result.getLocations().get(0).getPhysicalLocation().getArtifactLocation().getUri();
+        return result.getLocations().get(0).getPhysicalLocation().getArtifactLocation().getUri()
+                .replace("file:", "");
     }
   }
 
