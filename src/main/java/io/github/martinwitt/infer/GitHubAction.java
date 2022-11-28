@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import org.buildobjects.process.ProcBuilder;
 import org.kohsuke.github.GitHub;
 import io.quarkiverse.githubaction.Action;
@@ -34,7 +35,9 @@ public class GitHubAction {
         buildCommandArgs.addAll(List.of("run","--sarif", "--"));
         buildCommandArgs.addAll(Arrays.asList(buildCommand.split(" ", -1)));
         try {
-           commands.appendJobSummary(runInfer(buildCommandArgs));
+            commands.appendJobSummary(runInfer(buildCommandArgs));
+            commands.appendJobSummary(Files.list(Path.of(context.getGitHubWorkspace() + "/infer-out/")).map(v -> v.toString()).collect(Collectors.joining("\n")));
+            commands.appendJobSummary("## Infer scan completed");
             Path.of(context.getGitHubWorkspace()).forEach(System.out::println);
             commands.appendJobSummary(Files
                     .readString(Path.of(context.getGitHubWorkspace() + "/infer-out/output.json")));
