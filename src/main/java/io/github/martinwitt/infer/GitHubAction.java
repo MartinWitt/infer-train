@@ -45,9 +45,8 @@ public class GitHubAction {
         commands.appendJobSummary("Done running Infer");
     }
 
-    private int runInfer(List<String> args) throws IOException, InterruptedException {
-        System.out.println(ProcBuilder.run("infer", args.toArray(new String[0])));
-
+    private int runInfer(List<String> args)  {
+        new ProcBuilder("infer").withArgs(args.toArray(new String[0])).withNoTimeout().run();
        return 0;
     }
   }
