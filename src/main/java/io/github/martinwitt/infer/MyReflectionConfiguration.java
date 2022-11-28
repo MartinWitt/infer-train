@@ -8,6 +8,7 @@ import com.contrastsecurity.sarif.SarifSchema210;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection(
-    targets = {SarifSchema210.class, Result.class,PhysicalLocation.class,ArtifactLocation.class,Region.class})
+    targets = {SarifSchema210.class, Result.class,PhysicalLocation.class,ArtifactLocation.class,Region.class, 
+                SarifSchema210.Version.class})
 public class MyReflectionConfiguration {
 }
