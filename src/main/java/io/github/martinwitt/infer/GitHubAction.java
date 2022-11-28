@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -21,17 +23,19 @@ import io.quarkiverse.githubaction.Outputs;
 
 public class GitHubAction {
     public static final String ACTION_NAME = "Infer-Scan";
+    public static final String ACTION_DESCRIPTION =
+            "Run Infer static analysis on a GitHub repository";
+    private static final String INFER_COMMAND = "infer";
 
     @Action()
     void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub, Outputs outputs) throws IOException {
-        System.out.println("Hello " + "From GitHub Action");
         String buildCommand = inputs.get("build-command").orElseThrow();
-        System.out.println("Build command: " + buildCommand);
-        System.out.println("I would run: " + "infer capture - " + buildCommand);
-        System.out.println(context);
+        List<String> buildCommandArgs = new ArrayList<>();
+        buildCommandArgs.addAll(List.of("capture","--sarif", "--"));
+        buildCommandArgs.addAll(Arrays.asList(buildCommand.split(" ", -1)));
         try {
-            Files.list(Path.of(context.getGitHubWorkspace())).forEach(System.out::println);
-            int exitCode = runInfer(List.of("capture","--sarif", "--", "gradle", "compileJava"));
+            runInfer(buildCommandArgs);
+            Path.of(context.getGitHubWorkspace()).forEach(System.out::println);
             commands.appendJobSummary(Files
                     .readString(Path.of(context.getGitHubWorkspace() + " infer-out/output.json")));
 
@@ -46,7 +50,8 @@ public class GitHubAction {
     }
 
     private int runInfer(List<String> args)  {
-        new ProcBuilder("infer").withArgs(args.toArray(new String[0])).withNoTimeout().run();
+        new ProcBuilder("infer").withArgs(args.toArray(new String[0])).withNoTimeout()
+                .withOutputStream(System.out).run();
        return 0;
     }
   }
