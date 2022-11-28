@@ -38,7 +38,6 @@ public class GitHubAction {
         } catch (Exception e) {
             commands.appendJobSummary(e.toString());
             e.printStackTrace();
-            System.out.println("Error: " + e.getMessage());
         }
         outputs.produce("resultfile", context.getGitHubWorkspace() + " infer-out/report.sarif");
         outputs.produce("results_infer", Files.readString(Path.of(context.getGitHubWorkspace() + " infer-out/output.json")));
