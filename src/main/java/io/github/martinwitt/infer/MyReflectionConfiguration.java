@@ -145,6 +145,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
                 VersionControlDetails.class,
                 WebRequest.class,
                 WebResponse.class,
-                SarifSchema210.Version.class})
+                SarifSchema210.Version.class,
+                com.contrastsecurity.sarif.Result.Level.class})
 public class MyReflectionConfiguration {
 }
