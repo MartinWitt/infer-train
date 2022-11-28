@@ -21,6 +21,7 @@ dependencies {
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
     implementation group: 'org.buildobjects', name: 'jproc', version: '2.8.2'
+    implementation "com.contrastsecurity:java-sarif:2.0"
 }
 
 group 'io.github.martinwitt.infer'

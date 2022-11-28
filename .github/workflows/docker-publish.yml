@@ -115,3 +115,4 @@ jobs:
           uses: docker://ghcr.io/martinwitt/infer-train:dev
           with:
             build-command: "gradle compileJava"
+            use-annotations: "true"
