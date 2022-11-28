@@ -37,14 +37,14 @@ public class GitHubAction {
             runInfer(buildCommandArgs);
             Path.of(context.getGitHubWorkspace()).forEach(System.out::println);
             commands.appendJobSummary(Files
-                    .readString(Path.of(context.getGitHubWorkspace() + " infer-out/output.json")));
+                    .readString(Path.of(context.getGitHubWorkspace() + "/infer-out/output.json")));
 
         } catch (Exception e) {
             commands.appendJobSummary(e.toString());
             e.printStackTrace();
         }
-        outputs.produce("resultfile", context.getGitHubWorkspace() + " infer-out/report.sarif");
-        outputs.produce("results_infer", Files.readString(Path.of(context.getGitHubWorkspace() + " infer-out/output.json")));
+        outputs.produce("resultfile", context.getGitHubWorkspace() + "/infer-out/report.sarif");
+        outputs.produce("results_infer", Files.readString(Path.of(context.getGitHubWorkspace() + "/infer-out/output.json")));
         System.out.println("Done running Infer ");
         commands.appendJobSummary("Done running Infer");
     }
