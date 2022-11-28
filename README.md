@@ -1,62 +1,30 @@
-# infer-train Project
+# Infer-java-Action
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+This action runs the infer static analyzer on a Java project.
+The infer static analyzer is a tool for Java, C and Objective-C, see https://fbinfer.com/.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
-
-## Running the application in dev mode
-
-You can run your application in dev mode that enables live coding using:
-```shell script
-./gradlew quarkusDev
+## Usage
+```yml
+  run-infer:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
+        - name : run infer action
+          uses: docker://ghcr.io/martinwitt/infer-train:master
+          with:
+            build-command: "gradle compileJava"
+            use-annotations: "true"
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+Options:
 
-## Packaging and running the application
+- `build-command` (required): The command to build the project.
+- `use-annotations` (optional): Whether to use the GitHub PR annotations. Default: `false`
 
-The application can be packaged using:
-```shell script
-./gradlew build
-```
-It produces the `quarkus-run.jar` file in the `build/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `build/quarkus-app/lib/` directory.
 
-The application is now runnable using `java -jar build/quarkus-app/quarkus-run.jar`.
+## Motivation
 
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./gradlew build -Dquarkus.package.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
-./gradlew build -Dquarkus.package.type=native
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./build/infer-train-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/gradle-tooling.
-
-## Related Guides
-
-- Micrometer Registry Prometheus ([guide](https://quarkus.io/guides/micrometer)): Enable Prometheus support for Micrometer
-- JGit ([guide](https://quarkiverse.github.io/quarkiverse-docs/quarkus-jgit/dev/index.html)): Access your Git repositories
-- Micrometer metrics ([guide](https://quarkus.io/guides/micrometer)): Instrument the runtime and your application with dimensional metrics using Micrometer.
-
-## Provided Code
-
-### RESTEasy Reactive
-
-Easily start your Reactive RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+The infer team sadly does not provide a docker image for Infer. This action is a workaround to run infer in a GitHub action.
+Also, it was a great learning experience for me to write a GitHub action.
