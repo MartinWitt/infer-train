@@ -2,6 +2,8 @@ package io.github.martinwitt.infer;
 
 import com.contrastsecurity.sarif.Result;
 import com.contrastsecurity.sarif.SarifSchema210;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkiverse.githubaction.Action;
 import io.quarkiverse.githubaction.Commands;
@@ -46,12 +48,30 @@ public class GitHubAction {
             commands.group("## Infer scan results");
             commands.appendJobSummary(Files.readString(Path.of(context.getGitHubWorkspace(), "/infer-out/report.txt")));
             commands.endGroup();
+            List<Result> results = getResults(context);
+            for (Result result : results) {
+                String ruleId = result.getRuleId();
+                String region = result.getLocations()
+                        .get(0)
+                        .getPhysicalLocation()
+                        .getContextRegion()
+                        .getSnippet()
+                        .getText();
+                String message = result.getMessage().getText();
+                String markdown =
+                        """
+                            # %s
+                            %s
+                            ```java
+                            %s
+                            ```
+
+                                """
+                                .formatted(ruleId, message, region);
+                commands.warning(markdown);
+            }
             if (inputs.getBoolean("use-annotations").orElse(false)) {
-                StringReader reader = new StringReader(Files.readString(
-                        Path.of(context.getGitHubWorkspace() + INFER_OUT_REPORT_SARIF), StandardCharsets.UTF_8));
-                ObjectMapper mapper = new ObjectMapper();
-                SarifSchema210 sarif = mapper.readValue(reader, SarifSchema210.class);
-                List<Result> results = sarif.getRuns().get(0).getResults();
+
                 if (inputs.getBoolean("pr-mode").orElse(false)) {
                     results = prMode.filterResults(
                             results,
@@ -79,6 +99,14 @@ public class GitHubAction {
         } catch (Exception e) {
             commands.appendJobSummary("## Infer scan failed\n" + e.toString());
         }
+    }
+
+    private List<Result> getResults(Context context) throws IOException, StreamReadException, DatabindException {
+        StringReader reader = new StringReader(Files.readString(
+                Path.of(context.getGitHubWorkspace() + INFER_OUT_REPORT_SARIF), StandardCharsets.UTF_8));
+        ObjectMapper mapper = new ObjectMapper();
+        SarifSchema210 sarif = mapper.readValue(reader, SarifSchema210.class);
+        return sarif.getRuns().get(0).getResults();
     }
 
     private String runInfer(List<String> args) {
