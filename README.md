@@ -6,16 +6,16 @@ The infer static analyzer is a tool for Java, C and Objective-C, see https://fbi
 ## Usage
 ```yml
 run-infer:
-	runs-on: ubuntu-latest
-	needs: build
-	steps:
-		- name: Checkout repository
-		uses: actions/checkout@v3
-		- name : run infer action
-		uses: docker://ghcr.io/martinwitt/infer-train:master
-		with:
-			build-command: "gradle compileJava"
-			use-annotations: "true"
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+        - name: Checkout repository
+        uses: actions/checkout@v3
+        - name : run infer action
+        uses: docker://ghcr.io/martinwitt/infer-train:master
+        with:
+            build-command: "gradle compileJava"
+            use-annotations: "true"
 ```
 
 Options:
