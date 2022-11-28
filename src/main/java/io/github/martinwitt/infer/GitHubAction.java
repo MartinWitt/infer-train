@@ -50,9 +50,10 @@ public class GitHubAction {
     }
 
     private int runInfer(List<String> args)  {
-        new ProcBuilder("infer").withArgs(args.toArray(new String[0])).withNoTimeout()
-                .withOutputStream(System.out).run();
-       return 0;
+        var string = new ProcBuilder("infer").withArgs(args.toArray(new String[0])).withNoTimeout()
+                .run().getOutputString();
+       System.out.println(string);
+        return 0;
     }
   }
 
