@@ -7,7 +7,8 @@
     {
       "description": "Automerge updates",
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "branch",
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "pinDigest", "digest"]
     }
   ]
 }
