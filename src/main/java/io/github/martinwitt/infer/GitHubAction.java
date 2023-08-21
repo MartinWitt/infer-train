@@ -9,7 +9,7 @@ import io.quarkiverse.githubaction.Action;
 import io.quarkiverse.githubaction.Commands;
 import io.quarkiverse.githubaction.Context;
 import io.quarkiverse.githubaction.Inputs;
-import io.quarkiverse.githubaction.Outputs;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.inject.Inject;
 import org.buildobjects.process.ProcBuilder;
 import org.kohsuke.github.GitHub;
 
@@ -33,8 +32,7 @@ public class GitHubAction {
     PrMode prMode;
 
     @Action
-    void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub, Outputs outputs)
-            throws IOException {
+    void runInfer(Inputs inputs, Commands commands, Context context, GitHub gitHub) throws IOException {
         String buildCommand = inputs.get("build-command").orElseThrow();
         List<String> buildCommandArgs = new ArrayList<>();
         buildCommandArgs.addAll(List.of("run", "--sarif", "--"));
