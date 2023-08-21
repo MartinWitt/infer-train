@@ -1,11 +1,11 @@
 package io.github.martinwitt.infer;
 
 import com.contrastsecurity.sarif.Result;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.ObjectId;
