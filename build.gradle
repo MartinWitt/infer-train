@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-resteasy-reactive-jackson'
-    implementation 'io.quarkiverse.jgit:quarkus-jgit:2.2.0'
+    implementation 'io.quarkiverse.jgit:quarkus-jgit:3.0.2'
     implementation 'io.quarkus:quarkus-arc'
     implementation 'io.quarkiverse.githubaction:quarkus-github-action:0.9.2'
     testImplementation 'io.quarkus:quarkus-junit5'
