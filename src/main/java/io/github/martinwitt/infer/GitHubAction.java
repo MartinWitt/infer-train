@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.buildobjects.process.ProcBuilder;
+import org.buildobjects.process.ProcResult;
 import org.kohsuke.github.GitHub;
 
 public class GitHubAction {
@@ -40,13 +41,19 @@ public class GitHubAction {
         try {
             commands.jobSummary("# Infer scan start\n");
             commands.group("## infer build log");
-            commands.notice(runInfer(buildCommandArgs));
+            InferRunResult runInfer = runInfer(buildCommandArgs);
+            commands.notice(runInfer.stdOut);
+            commands.notice(runInfer.stdErr);
+            commands.notice("Exit value of infer was:" + runInfer.exitCode);
             commands.endGroup();
             commands.appendJobSummary("## Infer scan completed");
             commands.group("## Infer scan results");
             commands.appendJobSummary(Files.readString(Path.of(context.getGitHubWorkspace(), "/infer-out/report.txt")));
             commands.endGroup();
             List<Result> results = getResults(context);
+            commands.notice("Found " + results.size() + " results");
+            commands.setOutput(
+                    "Infer-Sarif", Files.readString(Path.of(context.getGitHubWorkspace(), INFER_OUT_REPORT_SARIF)));
             for (Result result : results) {
                 String ruleId = result.getRuleId();
                 String message = result.getMessage().getText();
@@ -100,12 +107,12 @@ public class GitHubAction {
         return sarif.getRuns().get(0).getResults();
     }
 
-    private String runInfer(List<String> args) {
-        return new ProcBuilder(INFER_COMMAND)
+    private InferRunResult runInfer(List<String> args) {
+        ProcResult run = new ProcBuilder(INFER_COMMAND)
                 .withArgs(args.toArray(new String[0]))
                 .withNoTimeout()
-                .run()
-                .getOutputString();
+                .run();
+        return new InferRunResult(run.getOutputString(), run.getErrorString(), run.getExitValue());
     }
 
     private static String getFilePathFromResult(Result result) {
@@ -118,4 +125,6 @@ public class GitHubAction {
                 // path for github annotations
                 .replace("file:", "");
     }
+
+    record InferRunResult(String stdOut, String stdErr, int exitCode) {}
 }
