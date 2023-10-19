@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
@@ -106,7 +106,7 @@ jobs:
     needs: build
     steps:
         - name: Checkout repository
-          uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+          uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         - name : run test action
           uses: docker://ghcr.io/martinwitt/infer-train:master
           with:
